@@ -1,0 +1,19 @@
+{
+  "name": "dog-viewer",
+  "version": "1.0.0",
+  "description": "wilddog data viewer and editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stackOverMind/dog-viewer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stackOverMind/dog-viewer/issues"
+  },
+  "homepage": "https://github.com/stackOverMind/dog-viewer#readme"
+}

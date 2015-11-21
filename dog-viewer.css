@@ -1,0 +1,321 @@
+.unable-btn{
+    cursor:default;
+}
+.unable-btn:hover i{
+    color:#ccc;
+}
+.data-export{
+    margin-top:12px;
+    padding-top:44px;
+    padding-left:64px;
+    padding-right:64px;
+    padding-bottom:34px;
+    box-sizing:border-box;
+    border:2px dashed #ccc;
+    border-radius:3px;
+}
+.data-export p{
+    margin:0;
+}
+.view-links{
+    padding-top:48px;
+    text-align:center;
+}
+.view-links .view-link{
+    display:inline-block;
+    box-sizing:border-box;
+    height:15px;
+    line-height:14px;
+}
+.view-link:hover{
+    border-bottom:1px solid #E84D1E;
+}
+.link-auth{
+    margin-left:60px;
+}
+.data-export-cancel{
+    padding-top:36px;
+    text-align:center;
+}
+.cancel-btn{
+    width:140px;
+    height:36px;
+    text-align:center;
+    border:1px solid #ccc;
+    color:#ccc;
+    border-radius:3px;
+    background: none;
+}
+.link-text{
+    color:#666;
+    border-bottom:1px solid #ccc;
+}
+.link-text:hover{
+    color:#E84D1E;
+    border-color:#E84D1E;
+}
+.cancel-btn:hover{
+    color:#E84D1E;
+    border-color:#E84D1E;
+}
+.spriteBtn {
+    background-image: url(../images/console_data/buttons.png);
+    display: inline-block;
+    text-indent: -9999px;
+    vertical-align: middle;
+}
+.spriteBtn.addBtn {
+    background-position: -341px 0;
+    height: 10px;
+    margin-left: 7px;
+    width: 10px;
+}
+.spriteBtn.removeBtn {
+    background-position: -341px -10px;
+    height: 10px;
+    margin-left: 7px;
+    margin-right: 7px;
+    width: 10px;
+}
+.confirmBtn {
+    background-position: -351px 0;
+    height: 20px;
+    margin-left: 10px;
+    width: 60px;
+}
+.confirmBtn:hover,
+.confirmBtn:focus {
+    background-position: -351px -20px;
+}
+.cancelBtn {
+    background-position: -411px 0;
+    height: 20px;
+    width: 60px;
+}
+.cancelBtn:hover,
+.cancelBtn:focus {
+    background-position: -411px -20px;
+}
+.button:hover {
+    text-decoration: none;
+}
+.arrow {
+    color: #586066;
+    font-weight: 400;
+}
+.jstree {
+    background-color: #fff;
+    border-radius: 5px;
+    clear: none;
+/*    float: left;*/
+    min-height: 400px;
+    margin-top: 20px;
+    width: 600px;
+    margin-bottom: 100px;
+}
+.data-over-warning{
+    margin-top:24px;
+    padding-left:8px;
+    padding-right:8px;
+    box-sizing:border-box;
+    width:100%;
+    height:36px;
+    line-height:34px;
+    color:#e6501e;
+    border:1px solid #e6501e;
+}
+.close-warning{
+    float:right;
+    width:12px;
+    height:12px;
+    cursor:pointer;
+}
+.tree-content {
+    border: 1px transparent solid;
+    border-radius: 3px;
+    padding: 3px 3px 4px 3px;
+    text-align: center;
+}
+.tree-content-hover {
+    border-color: #a8adb3;
+}
+.adding .tree-content {
+    border-color: #a8adb3;
+}
+.jstree .confirm>ins {
+    background: 0 0;
+}
+.jstree .root>div>ins {
+    background: 0 0;
+}
+.jstree a,
+.jstree a:hover,
+.jstree a:visited {
+    color: inherit;
+}
+.jstree-default .jstree-open,
+.jstree-default .jstree-closed {
+    font-size: 12px;
+    font-weight: 600;
+}
+.jstree-default .jstree-leaf {
+    color: #565d63;
+    font-size: 12px;
+}
+.jstree-default .jstree-leaf .name {
+    font-weight: 700;
+}
+.jstree ul,
+.jstree li {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.jstree li {
+    display: block;
+    line-height: 26px;
+    margin-left: 33px;
+    min-height: 26px;
+    min-width: 33px;
+    white-space: nowrap;
+}
+.jstree li.jstree-open>ul {
+    display: block;
+}
+.jstree li.jstree-closed>ul {
+    display: none;
+}
+.jstree>ul>li {
+    margin-left: 0;
+}
+.jstree ins {
+    display: inline-block;
+    height: 28px;
+    khtml-user-select: none;
+    margin: 0;
+    moz-user-select: none;
+    padding: 0;
+    text-decoration: none;
+    webkit-user-select: none;
+    width: 33px;
+}
+.jstree-default li,
+.jstree-default .jstree-icon {
+    background-color: transparent;
+    background-image: url(../images/console_data/tree.png);
+    background-repeat: no-repeat;
+}
+.jstree-default li {
+    background-position: -99px 0;
+    background-repeat: repeat-y;
+}
+.jstree-default li:last-child {
+    background: 0 0;
+}
+.jstree-default .jstree-open>div>ins {
+    background-position: 0 0;
+}
+.jstree-default .jstree-open.jstree-root>div>ins {
+    background-position: 0 -7px;
+}
+.jstree-default .jstree-closed>div>ins {
+    background-position: -33px 0;
+}
+.jstree-default .jstree-closed.jstree-root>div>ins {
+    background-position: -33px -7px;
+}
+.jstree-default .jstree-leaf>div>ins {
+    background-position: -66px 0;
+}
+.jstree-default .jstree-root>div>ins {
+    height: 14px;
+    line-height: 14px;
+    width: 33px;
+}
+.jstree-default .jstree-root>div .tree-content {
+    line-height: 14px;
+}
+.jstree-default .jstree-showmore>div .tree-content {
+    background: #f3faff;
+    border: 1px solid #0f97f9;
+    border-radius: 3px;
+    color: #0f97f9;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+.jstree-default .jstree-leaf>div>ins {
+    background-position: -66px 0;
+}
+.valueedit {
+    outline: 0;
+    font-size: 12px;
+    color: inherit;
+    border: 1px transparent solid;
+    background: 0 0;
+    cursor: text;
+    min-width: 150px;
+    max-width: 450px;
+    padding: 0 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.valueedit:disabled,
+.valueedit[disabled=disabled] {
+    cursor: text
+}
+.valueedit.hover {
+    border: 1px #565d63 solid;
+    min-width: 100px
+}
+.valueedit:focus {
+    border: 1px rgb(204, 204, 204) solid;
+}
+.nameInput,
+.valueInput {
+    font-size: 12px;
+    /*    color: inherit;*/
+    color: rgb(204, 204, 204);
+    background: 0 0;
+    width: 100px;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 0;
+    outline: 0;
+    padding: 0
+}
+.nameInput,
+.valueInput {
+    margin-left: 2px
+}
+.valueLabel {
+    padding-left: 9px
+}
+.valueInput {
+    /*    font-family: monospace;*/
+    width: 200px
+}
+.adding .tree-content {
+    border-color: #a8adb3
+}
+.added {
+    color: #ffffff;
+    background-color: #8aba56;
+    opacity: 0.6;
+}
+.removed {
+    /*    border-color: #fe464d;*/
+    background-color: #e95846;
+    opacity: 0.6;
+}
+.changed {
+    /*    border-color: #eeab01;*/
+    background-color: #f5bb1c;
+    opacity: 0.6;
+}
+.moved {
+    /*    border-color: #0f97f9;*/
+    background-color: #00b7ee;
+    opacity: 0.6;
+}
