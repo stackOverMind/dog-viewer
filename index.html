@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dog Viewer</title>
+	<link rel="stylesheet" type="text/css" href="dog-viewer.css">
+</head>
+<body>
+
+<div class="jstree"></div>
+<script type="text/javascript" src="https://cdn.wilddog.com/js/client/current/wilddog.js"></script>
+<script type="text/javascript" src="dog-viewer.js"></script>
+<script type="text/javascript">
+	var ref=new Wilddog('https://test123.wilddogio.com');
+	var dogView=new DogViewer(ref,document.querySelector(".jstree"));
+</script>
+</body>
+</html>
