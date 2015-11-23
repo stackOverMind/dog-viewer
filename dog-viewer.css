@@ -59,7 +59,7 @@
     border-color:#E84D1E;
 }
 .spriteBtn {
-    background-image: url(../images/console_data/buttons.png);
+    background-image: url(./buttons.png);
     display: inline-block;
     text-indent: -9999px;
     vertical-align: middle;
@@ -203,7 +203,7 @@
 .jstree-default li,
 .jstree-default .jstree-icon {
     background-color: transparent;
-    background-image: url(../images/console_data/tree.png);
+    background-image: url(./tree.png);
     background-repeat: no-repeat;
 }
 .jstree-default li {
@@ -319,3 +319,4 @@
     background-color: #00b7ee;
     opacity: 0.6;
 }
+
