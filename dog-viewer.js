@@ -7,6 +7,7 @@ var DogViewer = function(ref,rootDom){
     this.rootPath=this.url.pathname;
     this.parser = new DOMParser();
     this.init();
+    this.inited=false;
 }
 
 //dom node state: 1:null 2 leaf 3 parent
@@ -20,7 +21,14 @@ DogViewer.prototype.init = function(){
         //init with client
         //init root
         self.mode = 0;
-        self._DomAddNode(self.ref,self.rootDom,self.rootPath,snap.key(),null,snap.val());
+        if(self.inited){
+            //do nothing
+        }
+        else{
+            self.inited=true 
+            self._domAddNode(self.ref,self.rootDom,self.rootPath,snap.key(),null,snap.val());          
+        }
+
     },function(err){
         //init with rest
         self.mode= 1;
@@ -101,6 +109,20 @@ DogViewer.prototype._newNode = function(ref,value){
     return res;
 }
 
+DogViewer.prototype._updateNodeValue = function(ref,dom,value){
+    if(typeof value != 'object'){
+        var input = dom.querySelector("input.valueedit")
+        var jsonValue = JSON.stringify(value);
+        input.title = jsonValue;
+        input.value = jsonValue;   
+    }
+    else{
+        //do nothing
+        //dom.querySelector(".valueContainer").innerHTML = '';
+    }
+
+}
+
 DogViewer.prototype._initNodeEvent = function(ref,dom){
 
     var url = new URL(ref.toString());
@@ -109,25 +131,39 @@ DogViewer.prototype._initNodeEvent = function(ref,dom){
     ref.orderByPriority().on('child_added',function(snap,prKey){
         var key = snap.key()
         var value = snap.val();
-        self._DomAddNode(ref.child(key),dom,path,key,prKey,value);
+        self._domAddNode(ref.child(key),dom,path,key,prKey,value);
     });
-    ref.orderByPriority().on('child_removed',function(snap){
-
-
-    });
-    ref.orderByPriority().on('child_moved',function(){
-
+    ref.orderByPriority().on('child_removed',function(snap,prKey){
+        var key = snap.key()
+        var value = snap.val();
+        self._domRemoveNode(ref.child(key),dom,path,key);
 
     });
-    ref.orderByPriority().on('child_changed',function(){
+    ref.orderByPriority().on('child_moved',function(snap,prKey){
+        var key = snap.key()
+        var value = snap.val();
+        self._domMoveNode(ref.child(key),dom,path,key,prKey);
 
     });
+    ref.orderByPriority().on('child_changed',function(snap,prKey){
+        var key = snap.key()
+        var value = snap.val();
+        self._domChangeNode(ref.child(key),dom,path,key,prKey,value);
+    });
+
+
 
 }
-//id: "{prx}:path"
+//id: "{prx}{path}"
 DogViewer.prototype._insertAfter = function(parentDom,path,toInsert){
     if(path==null){
-        parentDom.appendChild(toInsert);
+        if(parentDom.firstChild==null){
+            parentDom.appendChild(toInsert);
+        }
+        else{
+            parentDom.insertBefore(toInsert,parentDom.firstChild);
+        }
+        
         return;
     }
     var prDomId = this.prx + path;
@@ -136,38 +172,108 @@ DogViewer.prototype._insertAfter = function(parentDom,path,toInsert){
         parentDom.appendChild(toInsert);
     }
     else{
-        parentDom.insertBefore(newElement, targetElement.nextSibling);
+        parentDom.insertBefore(toInsert, prDom.nextSibling);
     }
 }
 
-DogViewer.prototype._DomAddEdtor = function(ref,parentDom,path){
+DogViewer.prototype._domAddEdtor = function(ref,parentDom,path){
 
 
 }
-DogViewer.prototype._DomAddNode = function (ref,parentDom,path,key,prKey,value){
+DogViewer.prototype._domAddNode = function (ref,parentDom,path,key,prKey,value){
     var node=this._newNode(ref,value);
     if(prKey==null){
          this._insertAfter(parentDom,null,node);       
     }
     else{
+        if(path=='/'){
+            this._insertAfter(parentDom,path+prKey,node);
+        }
+        else{
+            this._insertAfter(parentDom,path+"/"+prKey,node);  
+        }
+
+    }
+
+    this._initNodeEvent(ref,node.querySelector("ul"));
+    var domId=node.id;
+    //TODO:add class add
+    setTimeout(function(){
+        var el=document.getElementById(domId);
+        if(el!=null){
+            //TODO:remove class add
+        }
+    },1000)
+}
+DogViewer.prototype._domChangeNode = function(ref,parentDom,path,key,prKey,value){
+
+    var domId = null;
+
+    if(key!=null){
+        if(path=='/'){
+            domId  =this.prx + path+key;
+        }
+        else{
+        domId  =this.prx + path+"/"+key;    
+        }
+    }
+    var node = document.getElementById(domId);
+    this._updateNodeValue(ref,node,value);
+    //TODO:add class change
+    setTimeout(function(){
+        var el=document.getElementById(domId);
+        if(el!=null){
+            //TODO:remove class change
+        }
+    },1000)
+
+
+}
+DogViewer.prototype._domRemoveNode = function(ref,parentDom,path,key){
+    var domId = null;
+    if(key!=null){
+        if(path=='/'){
+            domId  =this.prx + path+key;
+        }
+        else{
+        domId  =this.prx + path+"/"+key;    
+        }
+    }
+    var node = document.getElementById(domId);
+    //TODO: add class remove
+    setTimeout(function(){
+        var el=document.getElementById(domId);
+        if(el!=null){
+            el.parentNode.removeChild(el);
+        }
+    },1000)
+
+}
+DogViewer.prototype._domMoveNode = function(ref,parentDom,path,key, prKey){
+    var domId = null;
+    if(key!=null){
+        if(path=='/'){
+            domId  =this.prx + path+key;
+        }
+        else{
+        domId  =this.prx + path+"/"+key;    
+        }
+    }
+    var node = document.getElementById(domId);
+    parentDom.removeChild(node);
+    if(path=="/"){
+        this._insertAfter(parentDom,path+prKey,node);
+    }
+    else{
         this._insertAfter(parentDom,path+"/"+prKey,node);
     }
+    //TODO: add class move
     setTimeout(function(){
-
+        var el=document.getElementById(domId);
+        if(el!=null){
+            //TODO:remove class moved
+        }
     },1000)
-    this._initNodeEvent(ref,node.querySelector("ul"));
-}
-DogViewer.prototype._DomChangeNode = function(ref,parentDom,path,key,prKey,value){
-    //leaf->path
-    //path->leaf
-
-}
-DogViewer.prototype._DomReoveNode = function(ref,parentDom,path,key){
-
-
-}
-DogViewer.prototype._DomMoveNode = function(ref,parentDom,path,key, prKey){
-
 
 }
 
