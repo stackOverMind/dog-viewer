@@ -424,14 +424,25 @@ DogViewer.prototype.init = function(){
 
         },function(err){
             //init with rest
+            self.mode = 1;
+            self.inited = true ;
+            this.initWithRest(ref);
         })        
     }
 
     this.view.onSet(function(url,value){
         self.ref.child(new URL(url).pathname).set(value);
+        if(self.mode == 1){
+            //rest update view
+            this.view.remoteRemoveNode(new URL(url).toString());
+            this.view.remoteAddNode(new URL(url).toString(),null,value);
+        }
     });
     this.view.onRemove(function(url){
-     self.ref.child(new URL(url).pathname).remove(); 
+        self.ref.child(new URL(url).pathname).remove();
+        if(self.mode == 1){
+            this.view.remoteRemoveNode(new URL(url).toString())
+        } 
     });
 }
 DogViewer.prototype.setForceRest = function(){
