@@ -1,0 +1,25 @@
+{
+  "name": "dog-viewer",
+  "main": "dog-viewer.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/stackOverMind/dog-viewer",
+  "authors": [
+    "xiaoguangyu <xiaoguangyu@wilddog.com>"
+  ],
+  "keywords": [
+    "wilddog",
+    "database",
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "wilddog": "~0.4.9"
+  }
+}

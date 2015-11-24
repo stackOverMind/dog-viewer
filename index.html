@@ -2,17 +2,13 @@
 <html>
 <head>
 	<title>Dog Viewer</title>
-	<link rel="stylesheet" type="text/css" href="dog-viewer.css">
+	<link rel="stylesheet" type="text/css" href="/assets/dog-viewer.css">
 </head>
 <body>
 
 <div class="jstree"></div>
-<!--
 <script type="text/javascript" src="https://cdn.wilddog.com/js/client/current/wilddog.js"></script>
--->
-
-<script type="text/javascript" src="wilddog.debug.js"></script>
-<script type="text/javascript" src="dog-viewer.js"></script>
+<script type="text/javascript" src="/src/dog-viewer.js"></script>
 <script type="text/javascript">
 	var ref = new Wilddog('https://test123.wilddogio.com');
 	var viewController = new DomView(document.querySelector(".jstree"),function(url,rmCallback){
@@ -21,7 +17,6 @@
 			rmCallback(url);
 	});
 	var dogView = new DogViewer(ref,viewController);
-
 </script>
 
 </body>

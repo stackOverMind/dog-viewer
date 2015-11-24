@@ -44,6 +44,8 @@ DomView.Templates = {
                     '<span><a class="name" ></a>'+
                         '<span class="valueContainer">:<input type="text"  class="valueedit valueedit-hover"  disabled="disabled">'+
                         '</span>'+
+                        '<a href="#" class="spriteBtn addBtn">&nbsp;</a>'+
+                        '<a href="#" class="spriteBtn removeBtn">&nbsp;</a>'+
                     '</span>'+
                 '</span>'+
             '</div>'+
@@ -66,16 +68,33 @@ DomView.Templates = {
                     '<a href="#" class="spriteBtn removeBtn">&nbsp;</a>'+
                 '</span>'+
             '</div>'+
-        '</li>',
-    rmButton: '<a href="#" class="spriteBtn removeBtn"></a>'
+            '<ul></ul>'+
+        '</li>'
 
 }
-DomView.prototype._newRmButton = function(){
-    var res = document.createElement('a');
-    res.className="spriteBtn removeBtn"
-    res.href="#";
-    return res;
+
+DomView.prototype._addEditNode = function(parentDom){
+    var self = this;
+    var doc = this.parser.parseFromString(DomView.Templates.editor,'text/html');
+    var res = doc.body.firstChild;
+    var path = url.pathname;
+    var parentDomId = this.prx + path;
+    var parentDom = document.getElementById(parentDomId);
+    parentDom = parentDom.querySelector('ul');
+    res.querySelector('.removeBtn').addEventListener('click',function(){
+        res.parentDom.removeChild(res);
+    })
+    
+
+    if(parentDom.firstChild ==null){
+       parentDom.appendChild(res); 
+    }
+    else{
+        parentDom.insertBefore(res,parentDom.firstChild)  
+    }
+ 
 }
+
 DomView.prototype._newNode = function(url,value){
     var self=this;
     var doc = this.parser.parseFromString(DomView.Templates.leaf,"text/html");
@@ -84,7 +103,9 @@ DomView.prototype._newNode = function(url,value){
     res.id = this.prx+path;
     var name = res.querySelector("a.name");
     name.href = url;
+    var globleEditing=false;
     if(path == "/"){
+        //root
         name.innerText= url.host;
     }
     else{
@@ -93,11 +114,15 @@ DomView.prototype._newNode = function(url,value){
         name.innerText = key;    
     }
     if(typeof value != 'object'){
+        //leaf
         var input = res.querySelector("input.valueedit")
         var jsonValue = JSON.stringify(value);
         input.title = jsonValue;//TODO: xss risk
         input.value = jsonValue;
-        res.className="jstree-leaf";        
+        res.className="jstree-leaf";
+        var addBtn = res.querySelector('.addBtn');
+        addBtn.parentNode.removeChild(addBtn)
+
     }
     else{
         res.querySelector(".valueContainer").innerHTML = '';
@@ -112,22 +137,63 @@ DomView.prototype._newNode = function(url,value){
     var span =res.querySelector(".tree-content");
     span.addEventListener('mouseenter',function(e){
         span.className="tree-content tree-content-hover";
-        span.querySelector('span').appendChild(self._newRmButton())
+
         span.querySelector('.removeBtn').onclick = function(e){
             var url= e.target.parentNode.querySelector('a').href;
             console.log(url)
             if(self.showConfirmFunc)
                 self.showConfirmFunc(url,self.onRemoveCallback);
         }
+
+        var input = span.querySelector('.valueedit');
+        if(input&&!globleEditing){
+            var originValue=input.value;
+            input.disabled = false;
+            input.addEventListener('focus',function(e){
+                e.target.removeEventListener(e.type, arguments.callee);
+                globleEditing = true;
+                input.onkeydown =function(e){
+                    //
+                    console.log(e)
+                    if(e.keyIdentifier=='Enter'){
+                        e.target.removeEventListener(e.type, arguments.callee);
+                        var _value =e.target.value;
+                        try {
+                            _value = JSON.parse(_value);
+                        }
+                        catch(e){
+                            //do nothing
+                        }
+
+                        self.onSetCallback(url,_value);
+                        e.target.disabled=true;
+                        globleEditing=false;
+                    }
+                };
+                input.addEventListener('focusout',function(e){
+                    e.target.removeEventListener(e.type, arguments.callee);
+                    if(globleEditing){
+                        input.value=originValue;
+                        globleEditing=false;
+                    }
+                });
+
+            })
+        }
     });
     span.addEventListener('mouseleave',function(e){
         span.className="tree-content tree-content";
-        span.querySelector('span').removeChild(span.querySelector('.removeBtn'))
-    })
 
+        var input = span.querySelector('.valueedit');
+        if(input&&!globleEditing)
+            input.disabled = true;
+
+
+    })
 
     return res;
 }
+
 
 DomView.prototype._updateNodeValue = function(dom,value){
     if(typeof value != 'object'){
@@ -235,15 +301,13 @@ DomView.prototype.remoteMoveNode = function(url,prKey){
         }
     },1000);
 }
-DomView.prototype.onAdd = function(callback){
-    this.onAddCallback = callback;
+DomView.prototype.onSet = function(callback){
+    this.onSetCallback = callback;
 }
 DomView.prototype.onRemove = function(callback){
     this.onRemoveCallback = callback;
 }
-DomView.prototype.onChange = function(callback){
-    this.onUpdateCallback = callback;
-}
+
 var DogViewer = function(ref,viewController){
     this.ref = ref;
     this.url =  new URL(this.ref.toString());
@@ -277,13 +341,13 @@ DogViewer.prototype.init = function(){
         self.mode= 1;
 
     })
-    this.view.onAdd(function(url,value){
-
+    this.view.onSet(function(url,value){
         self.ref.child(new URL(url).pathname).set(value);
     });
     this.view.onRemove(function(url){
        self.ref.child(new URL(url).pathname).remove(); 
     });
+
 }
 
 DogViewer.prototype._initEventListener = function(ref){
