@@ -152,6 +152,12 @@
 .adding .tree-content {
     border-color: #a8adb3;
 }
+.adding .addBtn{
+    display: inline-block;   
+}
+.adding .removeBtn{
+    display: inline-block;   
+}
 .jstree .confirm>ins {
     background: 0 0;
 }
