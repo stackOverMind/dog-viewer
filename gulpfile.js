@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     watch = require('gulp-watch');
     path = require('path');
+    uglify = require('gulp-uglify');
 var browserSync = require('browser-sync');
 var spa         = require("browser-sync-spa");
 var jshint = require('gulp-jshint');
@@ -27,6 +28,19 @@ gulp.task('serve',['watch'],function(){
 
     });    
 })
+
+gulp.task('js',function(){
+    return gulp.src('src/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('dist'));
+
+})
+gulp.task('assets',function(){
+    return gulp.src('assets/**/*.*')
+    .pipe(gulp.dest('dist/assets'));
+
+})
+gulp.task('build',['js','assets']);
 
 //lint
 gulp.task('lint', function() {

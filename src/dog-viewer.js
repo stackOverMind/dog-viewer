@@ -223,6 +223,21 @@ DomView.prototype._initNodeEvent = function(node,shallow){
                 });
             })
         }
+        var icon = node.querySelector('.jstree-icon');
+        var shallowInit=false;
+        icon.onclick = function(e){
+            var current = dom.className;
+            if(current.indexOf('jstree-closed')>=0){
+                dom.className = current.replace("jstree-closed",'jstree-open');
+                if(shallow&&!shallowInit){
+                    shallowInit = true;
+                    onQueryCallback();
+                }
+            }
+            else{
+                dom.className = current.replace("jstree-open",'jstree-closed');   
+            }
+        }
 });
 span.addEventListener('mouseleave',function(e){
     span.className="tree-content tree-content";
@@ -262,14 +277,14 @@ DomView.prototype._newNode = function(url,value,shallow){
     else{
         res.querySelector(".valueContainer").innerHTML = '';
         res.appendChild(document.createElement("ul"));
-        res.className="jstree-open"
+        res.className="jstree-closed"
     }
     if(!this.hasRoot){
         this.hasRoot=true;
         res.className =res.className+' '+'root'
     }
     //init listeners
-    this._initNodeEvent(res);
+    this._initNodeEvent(res,shallow);
     return res;
 }
 
@@ -277,6 +292,14 @@ DomView.prototype._newNode = function(url,value,shallow){
 DomView.prototype._updateNodeValue = function(dom,value){
     if(typeof value != 'object'){
         var input = dom.querySelector("input.valueedit")
+        if(input == null){
+            //from a path to a leaf
+            dom.querySelector(".valueContainer").innerHTML= ':<input type="text"  class="valueedit valueedit-hover"  disabled="disabled"></span>';
+            dom.className="jstree-closed";
+            input = dom.querySelector("input.valueedit");
+            var addBtn = dom.querySelector('.addBtn');
+            addBtn.parentNode.removeChild(addBtn);
+        }
         var jsonValue = JSON.stringify(value);
         input.title = jsonValue;//TODO: xss risk
         input.value = jsonValue;
@@ -385,6 +408,9 @@ DomView.prototype.onSet = function(callback){
 }
 DomView.prototype.onRemove = function(callback){
     this.onRemoveCallback = callback;
+}
+DomView.prototype.onQuery = function(callback){
+    this.onQueryCallback = callback ;
 }
 
 var DogViewer = function(ref,viewController){
@@ -502,12 +528,19 @@ DogViewer.prototype._moveNode = function(ref,key,prKey){
 }
 DogViewer.prototype.initWithRest = function(ref){
     var url = ref.toString();
-    this.view.remoteAddNode(new URL(ref.toString()),null,true,true);
+    this._addNodeWithRest(ref);
 
 }
 DogViewer.prototype._addNodeWithRest = function(ref){
-    this._getDataWithRest (url,function(data){
-
+    this._getDataWithRest (ref.toString(),function(value){
+        if(typeof value == 'object'){
+            for(key in value){
+                this.view.remoteAddNode(new URL(ref.toString())._child(key),null,true,true);//add shallow
+            }
+        }
+        else{
+            this.view.remoteChangeNode(new URL(ref.toString()),null,value);
+        }
     })    
 }
 DogViewer.prototype._getDataWithRest = function(url,callback){
