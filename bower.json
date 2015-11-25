@@ -19,7 +19,4 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "wilddog": "~0.4.9"
-  }
 }
