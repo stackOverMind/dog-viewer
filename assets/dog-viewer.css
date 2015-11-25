@@ -141,11 +141,13 @@
 .tree-content-hover {
     border-color: #a8adb3;
 }
-
 .tree-content-hover>span>.removeBtn{
     display: inline-block;
 }
-.tree-content-hover>span>.addBtn{
+.jstree-leaf>div>.tree-content-hover>span>.addBtn{
+    display: inline-block;
+}
+.jstree-open>div>.tree-content-hover>span>.addBtn{
     display: inline-block;
 }
 

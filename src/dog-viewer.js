@@ -237,7 +237,8 @@ DomView.prototype._initNodeEvent = function(node,shallow){
             node.className = current.replace("jstree-closed",'jstree-open');
             if(shallow&&!shallowInit){
                 shallowInit = true;
-                onQueryCallback();
+                self.onQueryCallback(url);
+
             }
         }
         else{
@@ -293,7 +294,7 @@ DomView.prototype._updateNodeValue = function(dom,value){
         if(input == null){
             //from a path to a leaf
             dom.querySelector(".valueContainer").innerHTML= ':<input type="text"  class="valueedit valueedit-hover"  disabled="disabled"></span>';
-            dom.className="jstree-closed";
+            dom.className="jstree-leaf";
             input = dom.querySelector("input.valueedit");
             var addBtn = dom.querySelector('.addBtn');
             addBtn.parentNode.removeChild(addBtn);
@@ -458,16 +459,20 @@ DogViewer.prototype.init = function(){
         self.ref.child(new URL(url).pathname).set(value);
         if(self.mode == 1){
             //rest update view
-            this.view.remoteRemoveNode(new URL(url).toString());
-            this.view.remoteAddNode(new URL(url).toString(),null,value);
+            self.view.remoteChangeNode(new URL(url),value);
         }
     });
     this.view.onRemove(function(url){
         self.ref.child(new URL(url).pathname).remove();
         if(self.mode == 1){
-            this.view.remoteRemoveNode(new URL(url).toString())
+            this.view.remoteRemoveNode(new URL(url))
         } 
     });
+    this.view.onQuery(function(url){
+
+        self._addNodeWithRest(url);
+
+    })
 }
 DogViewer.prototype.setForceRest = function(){
     this.forceRest = true;
@@ -527,18 +532,22 @@ DogViewer.prototype._moveNode = function(ref,key,prKey){
 }
 DogViewer.prototype.initWithRest = function(ref){
     var url = ref.toString();
-    this._addNodeWithRest(ref);
+    this.view.remoteAddNode(new URL(url),null,{});
+    this._addNodeWithRest(ref.toString());
 
 }
-DogViewer.prototype._addNodeWithRest = function(ref){
-    this._getDataWithRest (ref.toString(),function(value){
+DogViewer.prototype._addNodeWithRest = function(url){
+    var self = this;
+    this._getDataWithRest (url,function(value){
         if(typeof value == 'object'){
+            var prKey = null;
             for(key in value){
-                this.view.remoteAddNode(new URL(ref.toString())._child(key),null,true,true);//add shallow
+                self.view.remoteAddNode(new URL(url)._child(key),prKey,true,true);//add shallow
+                prKey = key;
             }
         }
         else{
-            this.view.remoteChangeNode(new URL(ref.toString()),null,value);
+            self.view.remoteChangeNode(new URL(url),value);
         }
     })    
 }
