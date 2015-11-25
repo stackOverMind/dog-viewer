@@ -180,14 +180,12 @@ DomView.prototype._initNodeEvent = function(node,shallow){
                     var ul = node.querySelector('ul')
                     var firstChild = ul.firstChild;
                     editor.appendChild(confirm);
-                    if(firstChild==null){
+                    if(firstChild!=null){
                         ul.insertBefore(editor,firstChild);
                     }
                     else{
                         ul.appendChild(editor);
                     }
-
-
                 }
             }
         }
@@ -223,28 +221,29 @@ DomView.prototype._initNodeEvent = function(node,shallow){
                 });
             })
         }
-        var icon = node.querySelector('.jstree-icon');
-        var shallowInit=false;
-        icon.onclick = function(e){
-            var current = dom.className;
-            if(current.indexOf('jstree-closed')>=0){
-                dom.className = current.replace("jstree-closed",'jstree-open');
-                if(shallow&&!shallowInit){
-                    shallowInit = true;
-                    onQueryCallback();
-                }
-            }
-            else{
-                dom.className = current.replace("jstree-open",'jstree-closed');   
+    });
+
+    span.addEventListener('mouseleave',function(e){
+        span.className="tree-content tree-content";
+        var input = span.querySelector('.valueedit');
+        if(input&&!self.globleEditing)
+            input.disabled = true;
+    })
+    var icon = node.querySelector('.jstree-icon');
+    var shallowInit=false;
+    icon.onclick = function(e){
+        var current = node.className;
+        if(current.indexOf('jstree-closed')>=0){
+            node.className = current.replace("jstree-closed",'jstree-open');
+            if(shallow&&!shallowInit){
+                shallowInit = true;
+                onQueryCallback();
             }
         }
-});
-span.addEventListener('mouseleave',function(e){
-    span.className="tree-content tree-content";
-    var input = span.querySelector('.valueedit');
-    if(input&&!self.globleEditing)
-        input.disabled = true;
-})
+        else{
+            node.className = current.replace("jstree-open",'jstree-closed');   
+        }
+    }
 }
 DomView.prototype._newNode = function(url,value,shallow){
     var self=this;
@@ -276,12 +275,11 @@ DomView.prototype._newNode = function(url,value,shallow){
     }
     else{
         res.querySelector(".valueContainer").innerHTML = '';
-        res.appendChild(document.createElement("ul"));
         res.className="jstree-closed"
     }
     if(!this.hasRoot){
         this.hasRoot=true;
-        res.className =res.className+' '+'root'
+        res.className = 'jstree-open root'
     }
     //init listeners
     this._initNodeEvent(res,shallow);
@@ -509,6 +507,7 @@ DogViewer.prototype._destroyEventListener = function(ref){
 
 DogViewer.prototype._addRoot = function(ref,value){
     this.view.remoteAddNode(new URL(ref.toString()),null,value);
+    this._initEventListener(ref);
 }
 DogViewer.prototype._addNode = function (ref,key,prKey,value){
 
