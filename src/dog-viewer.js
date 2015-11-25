@@ -1,6 +1,7 @@
 
 
 URL.prototype._child=function(key){
+
     var newUrl=this.toString();
     if(this.pathname=="/"){
         newUrl=newUrl+key;
@@ -152,7 +153,7 @@ DomView.prototype._initNodeEvent = function(node,shallow){
         span.querySelector('.removeBtn').onclick = function(e){
             var url= e.target.parentNode.querySelector('a').href;
             if(self.showConfirmFunc)
-                self.showConfirmFunc(url,self.onRemoveCallback);
+                self.showConfirmFunc(decodeURIComponent(url),self.onRemoveCallback);
         }
         var addBtn = span.querySelector('.addBtn')
         if(addBtn){
@@ -250,7 +251,7 @@ DomView.prototype._newNode = function(url,value,shallow){
     var self=this;
     var doc = new DOMParser().parseFromString(DomView.Templates.leaf,"text/html");
     var res = doc.body.firstChild;
-    var path = url.pathname;
+    var path = decodeURIComponent(url.pathname);
     res.id = this.prx+path;
     var name = res.querySelector("a.name");
     name.href = url;
@@ -262,7 +263,8 @@ DomView.prototype._newNode = function(url,value,shallow){
     else{
         var sp = path.split("/");
         var key = sp[sp.length-1];
-        name.innerText = key;    
+        key = decodeURIComponent(key);
+        name.innerText = key;
     }
     if(typeof value != 'object'&& true!=shallow){
         //leaf
@@ -321,7 +323,7 @@ DomView.prototype._insertAfter = function(parentDom,url,toInsert){
 
         return;
     }
-    var path=url.pathname;
+    var path=decodeURIComponent(url.pathname);
     var prDomId = this.prx + path;
     var prDom = document.getElementById(prDomId);
     if(prDom == parentDom.lastChild){
@@ -332,7 +334,7 @@ DomView.prototype._insertAfter = function(parentDom,url,toInsert){
     }
 }
 DomView.prototype.remoteChangeNode = function(url,value){
-    var domId = this.prx+url.pathname;
+    var domId = this.prx+decodeURIComponent(url.pathname);
     var node = document.getElementById(domId);
     if(node!=null){
         if(typeof value!='object'){
@@ -352,7 +354,7 @@ DomView.prototype.remoteAddNode = function(url,prKey,value,shallow){
     var parentDom = this.rootDom;
     if(url.pathname!='/'){
         //not root
-        parentDom = document.getElementById(this.prx+url._parent().pathname).querySelector('ul');
+        parentDom = document.getElementById(this.prx+decodeURIComponent(url._parent().pathname)).querySelector('ul');
     }
     var node=this._newNode(url,value,shallow);
     if(prKey==null){
@@ -370,7 +372,7 @@ DomView.prototype.remoteAddNode = function(url,prKey,value,shallow){
     //TODO: css class change
 }
 DomView.prototype.remoteRemoveNode = function(url){
-    var domId = this.prx + url.pathname;
+    var domId = this.prx + decodeURIComponent(url.pathname);
     var node = document.getElementById(domId);
     node.id="removed:"+node.id;
     //TODO css class remove
@@ -385,7 +387,7 @@ DomView.prototype.remoteRemoveNode = function(url){
 
 }
 DomView.prototype.remoteMoveNode = function(url,prKey){
-    var domId = this.prx + url.pathname;
+    var domId = this.prx + decodeURIComponent(url.pathname);
     var node = document.getElementById(domId);
     var parentDom = node.parentNode;
     node = parentDom.removeChild(node);
@@ -415,7 +417,7 @@ DomView.prototype.onQuery = function(callback){
 var DogViewer = function(ref,viewController){
     this.ref = ref;
     this.url =  new URL(this.ref.toString());
-    this.rootPath = this.url.pathname;
+    this.rootPath = decodeURIComponent(this.url.pathname);
     this.view = viewController;
     this.inited = false;
     this.forceRest = false;
@@ -456,21 +458,21 @@ DogViewer.prototype.init = function(){
     }
 
     this.view.onSet(function(url,value){
-        self.ref.child(new URL(url).pathname).set(value);
+        self.ref.child(decodeURIComponent(new URL(url).pathname)).set(value);
         if(self.mode == 1){
             //rest update view
             self.view.remoteChangeNode(new URL(url),value);
         }
     });
     this.view.onRemove(function(url){
-        self.ref.child(new URL(url).pathname).remove();
+        self.ref.child(decodeURIComponent(new URL(url).pathname)).remove();
         if(self.mode == 1){
             this.view.remoteRemoveNode(new URL(url))
         } 
     });
     this.view.onQuery(function(url){
 
-        self._addNodeWithRest(url);
+        self._addNodeWithRest(decodeURIComponent(url));
 
     })
 }
@@ -479,7 +481,7 @@ DogViewer.prototype.setForceRest = function(){
 }
 DogViewer.prototype._initEventListener = function(ref){
     var url = new URL(ref.toString());
-    var path = url.pathname;
+    var path = decodeURIComponent(url.pathname);
     var self = this;
     ref.orderByPriority().on('child_added', function(snap,prKey){
         var key = snap.key()
@@ -505,7 +507,7 @@ DogViewer.prototype._initEventListener = function(ref){
 }
 DogViewer.prototype._destroyEventListener = function(ref){
     var url = new URL(ref.toString());
-    var path = url.pathname;
+    var path = decodeURIComponent(url.pathname);
     var self = this;
     ref.orderByPriority().off();
 }
