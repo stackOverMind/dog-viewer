@@ -252,7 +252,7 @@ DomView.prototype._newNode = function(url,value,shallow){
     var doc = new DOMParser().parseFromString(DomView.Templates.leaf,"text/html");
     var res = doc.body.firstChild;
     var path = decodeURIComponent(url.pathname);
-    res.id = this.prx+path;
+    res.id = this.prx+url.pathname;
     var name = res.querySelector("a.name");
     name.href = url;
 
@@ -324,7 +324,7 @@ DomView.prototype._insertAfter = function(parentDom,url,toInsert){
         return;
     }
     var path=decodeURIComponent(url.pathname);
-    var prDomId = this.prx + path;
+    var prDomId = this.prx + url.pathname;
     var prDom = document.getElementById(prDomId);
     if(prDom == parentDom.lastChild){
         parentDom.appendChild(toInsert);
@@ -334,7 +334,7 @@ DomView.prototype._insertAfter = function(parentDom,url,toInsert){
     }
 }
 DomView.prototype.remoteChangeNode = function(url,value){
-    var domId = this.prx+decodeURIComponent(url.pathname);
+    var domId = this.prx+url.pathname;
     var node = document.getElementById(domId);
     if(node!=null){
         if(typeof value!='object'){
@@ -354,7 +354,7 @@ DomView.prototype.remoteAddNode = function(url,prKey,value,shallow){
     var parentDom = this.rootDom;
     if(url.pathname!='/'){
         //not root
-        parentDom = document.getElementById(this.prx+decodeURIComponent(url._parent().pathname)).querySelector('ul');
+        parentDom = document.getElementById(this.prx+url._parent().pathname).querySelector('ul');
     }
     var node=this._newNode(url,value,shallow);
     if(prKey==null){
@@ -372,7 +372,7 @@ DomView.prototype.remoteAddNode = function(url,prKey,value,shallow){
     //TODO: css class change
 }
 DomView.prototype.remoteRemoveNode = function(url){
-    var domId = this.prx + decodeURIComponent(url.pathname);
+    var domId = this.prx + url.pathname;
     var node = document.getElementById(domId);
     node.id="removed:"+node.id;
     //TODO css class remove
@@ -387,7 +387,7 @@ DomView.prototype.remoteRemoveNode = function(url){
 
 }
 DomView.prototype.remoteMoveNode = function(url,prKey){
-    var domId = this.prx + decodeURIComponent(url.pathname);
+    var domId = this.prx + url.pathname;
     var node = document.getElementById(domId);
     var parentDom = node.parentNode;
     node = parentDom.removeChild(node);
