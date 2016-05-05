@@ -30,7 +30,7 @@ var DomView = function(rootDom,showConfirmFunc){
     this.prx = ""+Math.floor(Math.random()*10000);
 
     this.showConfirmFunc=showConfirmFunc;
-    this.globleEditing=false;
+    this.globalEditing=false;
     this.init();
 }
 DomView.prototype.init=function(){
@@ -158,12 +158,12 @@ DomView.prototype._initNodeEvent = function(node,shallow){
         var addBtn = span.querySelector('.addBtn')
         if(addBtn){
             addBtn.onclick = function(e){
-                if(!self.globleEditing){
-                    self.globleEditing = true;
+                if(!self.globalEditing){
+                    self.globalEditing = true;
                     var url= e.target.parentNode.querySelector('a').href;
                     var editor = self._newEditNode(function(node){
                         editor.parentNode.removeChild(editor);
-                        self.globleEditing=false;
+                        self.globalEditing=false;
                     });
                     var confirm = self._newConfirm(function(){
                         var res = self._getValueFromEditor(editor);
@@ -172,10 +172,10 @@ DomView.prototype._initNodeEvent = function(node,shallow){
                         return;
                     }
                     self.onSetCallback(new URL(url)._child(res.key),res.value);
-                    self.globleEditing = false ;
+                    self.globalEditing = false ;
                     editor.parentNode.removeChild(editor);
                 },function(){
-                    self.globleEditing = false ;
+                    self.globalEditing = false ;
                     editor.parentNode.removeChild(editor);
                 })
                     var ul = node.querySelector('ul')
@@ -191,12 +191,12 @@ DomView.prototype._initNodeEvent = function(node,shallow){
             }
         }
         var input = span.querySelector('.valueedit');
-        if(input&&!self.globleEditing){
+        if(input&&!self.globalEditing){
             var originValue=input.value;
             input.disabled = false;
             input.addEventListener('focus',function(e){
                 e.target.removeEventListener(e.type, arguments.callee);
-                self.globleEditing = true;
+                self.globalEditing = true;
                 input.onkeydown =function(e){
 
                     if(e.keyIdentifier=='Enter'){
@@ -210,14 +210,14 @@ DomView.prototype._initNodeEvent = function(node,shallow){
                         }
                         self.onSetCallback(url,_value);
                         e.target.disabled = true;
-                        self.globleEditing = false;
+                        self.globalEditing = false;
                     }
                 };
                 input.addEventListener('focusout',function(e){
                     e.target.removeEventListener(e.type, arguments.callee);
-                    if(self.globleEditing){
+                    if(self.globalEditing){
                         input.value=originValue;
-                        self.globleEditing=false;
+                        self.globalEditing=false;
                     }
                 });
             })
@@ -227,7 +227,7 @@ DomView.prototype._initNodeEvent = function(node,shallow){
     span.addEventListener('mouseleave',function(e){
         span.className="tree-content tree-content";
         var input = span.querySelector('.valueedit');
-        if(input&&!self.globleEditing)
+        if(input&&!self.globalEditing)
             input.disabled = true;
     })
     var icon = node.querySelector('.jstree-icon');
